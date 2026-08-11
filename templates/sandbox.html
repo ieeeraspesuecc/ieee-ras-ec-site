@@ -83,18 +83,37 @@
             background-color: var(--pcb-green);
             border-radius: 12px;
             width: 100%;
-            height: auto; /* Ensures height scales proportionally with width on mobile */
-            aspect-ratio: 900 / 280; /* Enforces absolute original proportion layout */
             display: block;
             border: 1px solid #21262d;
             cursor: pointer;
             box-sizing: border-box;
+            touch-action: none; /* Prevents page scroll/zoom while swiping to steer */
             
             /* Removes the tap-highlight flash color completely on mobile webviews */
             -webkit-tap-highlight-color: transparent;
             tap-highlight-color: transparent;
             user-select: none;
             -webkit-user-select: none;
+        }
+
+        .control-hint {
+            margin-top: 0.9rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: 'Fira Code', monospace;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .control-hint kbd {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--card-border);
+            border-radius: 5px;
+            padding: 0.15rem 0.5rem;
+            font-family: 'Fira Code', monospace;
+            color: var(--text-main);
         }
 
         .inventory-dashboard {
@@ -107,7 +126,7 @@
         @media (max-width: 768px) {
             .sandbox-wrapper {
                 margin: 5rem auto 2rem auto;
-                padding: 0 1rem;
+                padding: 0 0.6rem;
             }
             .panel-header {
                 flex-direction: column;
@@ -120,6 +139,10 @@
             }
             .inventory-dashboard { 
                 grid-template-columns: repeat(2, 1fr); 
+            }
+            .workspace-panel {
+                padding: 0.85rem;
+                border-radius: 14px;
             }
         }
 
@@ -186,7 +209,7 @@
     <div class="sandbox-wrapper">
         <div>
             <h2 style="font-size: 2.5rem; font-weight: 800; margin: 0; letter-spacing: -0.5px;">Kinematic Lab Workspace</h2>
-            <p style="color: var(--text-muted); margin-top: 0.4rem; font-size: 1rem;">Test the mechatronic bipedal skeleton engine across custom electronic instrumentation components.</p>
+            <p style="color: var(--text-muted); margin-top: 0.4rem; font-size: 1rem;">Route the signal trace across the circuit board and collect electronic instrumentation components.</p>
         </div>
 
         <div class="workspace-panel">
@@ -199,6 +222,10 @@
             </div>
             
             <canvas id="gameCanvas" width="900" height="280"></canvas>
+            <div class="control-hint">
+                <i class="fa-solid fa-gamepad" style="color: #58a6ff;"></i>
+                Use <kbd>&#8592;</kbd> <kbd>&#8593;</kbd> <kbd>&#8594;</kbd> <kbd>&#8595;</kbd> or swipe on mobile to steer the trace. Tap/click to start or restart.
+            </div>
         </div>
 
         <h3 style="margin-top: 2.5rem; font-size: 1.2rem; font-weight: 600; color: var(--text-main);">ECE Workbench Components Directory</h3>
@@ -226,138 +253,124 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Bipedal Chrome Dino-Style Skeleton Android Properties
-        const robot = {
-            x: 90, y: 165, width: 44, height: 65,
-            gravity: 0.65, jumpForce: -13.5, velocity: 0,
-            isJumping: false, animCycle: 0
-        };
+        // --- CLASSIC NOKIA-STYLE SNAKE ENGINE (PCB TRACE THEME) ---
+        let CELL = 20;
+        let COLS = 45;
+        let ROWS = 14;
+        const MOVE_EVERY = 8; // lower = faster; kept constant, no level scaling
 
-        // Complete Advanced Electronic Engineering Hardware Inventory List
-        const componentTypes = [
-            { type: 'resistor', color: '#d4a276', width: 45, height: 14, label: 'Resistor 10kΩ' },
-            { type: 'electrolytic_cap', color: '#2a6f97', width: 22, height: 36, label: 'Capacitor 470µF' },
-            { type: 'ic_16pin', color: '#1c1d22', width: 48, height: 24, label: 'MCU Atmega328p' },
-            { type: 'ultrasonic_hcsr04', color: '#005f73', width: 50, height: 28, label: 'Sonar HC-SR04' },
-            { type: 'oled_display', color: '#1a1a24', width: 42, height: 38, label: 'OLED Display Screen' },
-            { type: 'potentiometer', color: '#0a9396', width: 26, height: 34, label: '10k Potentiometer' },
-            { type: 'relay_5v', color: '#00b4d8', width: 34, height: 26, label: '5V Signal Relay' },
-            { type: 'battery_9v', color: '#2b2d42', width: 26, height: 42, label: '9V Battery' }
-        ];
+        // Resizes the canvas' actual pixel grid to fill available screen space.
+        // Desktop keeps the original widescreen board; mobile gets a taller
+        // board that uses much more of the viewport so the game is easy to see/play.
+        function resizeCanvas() {
+            const isMobile = window.innerWidth <= 768;
+            const container = canvas.parentElement;
+            const availWidth = Math.floor(container.clientWidth);
 
-        let obstacles = [];
-        let score = 0;
-        let highScore = parseInt(localStorage.getItem('ece_dino_high_score')) || 0;
-        let isGameOver = false;
-        let gameSpeed = 6.5;
-        let spawnTimer = 0;
+            let targetWidth, targetHeight;
+            if (isMobile) {
+                // Use nearly the full viewport width and a generous chunk of
+                // viewport height so the board fills the screen on phones.
+                targetWidth = availWidth;
+                targetHeight = Math.floor(Math.min(window.innerHeight * 0.55, availWidth * 1.15));
+                CELL = 18;
+            } else {
+                targetWidth = availWidth;
+                targetHeight = Math.floor(availWidth * (280 / 900));
+                CELL = 20;
+            }
 
-        // Display saved initial high score
+            COLS = Math.max(10, Math.floor(targetWidth / CELL));
+            ROWS = Math.max(8, Math.floor(targetHeight / CELL));
+
+            canvas.width = COLS * CELL;
+            canvas.height = ROWS * CELL;
+            canvas.style.width = '100%';
+            canvas.style.aspectRatio = COLS + ' / ' + ROWS;
+        }
+
+        let snake, direction, nextDirection, food, score, highScore, isGameOver, hasStarted, frameCount;
+
+        highScore = parseInt(localStorage.getItem('ece_snake_high_score')) || 0;
         document.getElementById('highScore').textContent = String(highScore).padStart(4, '0');
 
-        function jump() {
-            if (!robot.isJumping && !isGameOver) {
-                robot.velocity = robot.jumpForce;
-                robot.isJumping = true;
-            } else if (isGameOver) {
-                reset();
-            }
-        }
-
-        window.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); jump(); } });
-        
-        // Added standard touchstart listener to ensure instant tap handling on smartphones
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Prevents multi-triggering emulation click anomalies
-            jump();
-        }, { passive: false });
-        
-        canvas.addEventListener('click', jump);
-
-        function reset() {
-            obstacles = []; score = 0; gameSpeed = 6.5;
-            robot.y = 165; robot.velocity = 0; robot.isJumping = false;
+        function initGame() {
+            const startX = Math.floor(COLS / 4);
+            const startY = Math.floor(ROWS / 2);
+            snake = [
+                { x: startX,     y: startY },
+                { x: startX - 1, y: startY },
+                { x: startX - 2, y: startY }
+            ];
+            direction = { x: 1, y: 0 };
+            nextDirection = { x: 1, y: 0 };
+            score = 0;
             isGameOver = false;
+            frameCount = 0;
             document.getElementById('currentScore').textContent = "0000";
-            loop();
+            placeFood();
         }
 
-        // Vector Graphics Canvas Renderer for Real ECE Hardware Elements
-        function drawComponent(ctx, x, y, spec) {
-            ctx.lineWidth = 1.8;
-            
-            if (spec.type === 'resistor') {
-                ctx.strokeStyle = '#a8a29e';
-                ctx.beginPath(); ctx.moveTo(x - 12, y + 7); ctx.lineTo(x + spec.width + 12, y + 7); ctx.stroke();
-                ctx.fillStyle = spec.color; ctx.fillRect(x, y, spec.width, spec.height);
-                ctx.fillStyle = '#6f4e37'; ctx.fillRect(x + 8, y, 4, spec.height);
-                ctx.fillStyle = '#cc0000'; ctx.fillRect(x + 18, y, 4, spec.height);
-                ctx.fillStyle = '#ccaa00'; ctx.fillRect(x + 30, y, 4, spec.height);
-            } 
-            else if (spec.type === 'electrolytic_cap') {
-                ctx.fillStyle = spec.color; ctx.fillRect(x, y, spec.width, spec.height - 6);
-                ctx.fillStyle = '#9ca3af'; ctx.fillRect(x, y, spec.width, 6);
-                ctx.fillStyle = '#ffffff'; ctx.fillRect(x + 5, y + 6, 4, spec.height - 12);
-                ctx.strokeStyle = '#9ca3af';
-                ctx.beginPath(); ctx.moveTo(x + 6, y + spec.height - 6); ctx.lineTo(x + 6, y + spec.height + 6);
-                ctx.moveTo(x + spec.width - 6, y + spec.height - 6); ctx.lineTo(x + spec.width - 6, y + spec.height + 4); ctx.stroke();
-            }
-            else if (spec.type === 'ic_16pin') {
-                ctx.fillStyle = spec.color; ctx.fillRect(x, y, spec.width, spec.height);
-                ctx.fillStyle = '#374151'; ctx.beginPath(); ctx.arc(x, y + spec.height/2, 3, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = '#d1d5db';
-                let spacing = spec.width / 6;
-                for(let i = 0; i < 6; i++) {
-                    ctx.fillRect(x + (i * spacing) + 2, y - 5, 3, 5);
-                    ctx.fillRect(x + (i * spacing) + 2, y + spec.height, 3, 5);
-                }
-            }
-            else if (spec.type === 'ultrasonic_hcsr04') {
-                ctx.fillStyle = '#104f55'; ctx.fillRect(x, y + 6, spec.width, spec.height - 6); // PCB Backplate
-                ctx.fillStyle = '#9ca3af'; // Dual Sonar Metal Barrels
-                ctx.beginPath(); ctx.arc(x + 14, y + 16, 10, 0, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.arc(x + spec.width - 14, y + 16, 10, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#111827'; // Sensor mesh grids
-                ctx.beginPath(); ctx.arc(x + 14, y + 16, 7, 0, Math.PI * 2); ctx.fill();
-                ctx.beginPath(); ctx.arc(x + spec.width - 14, y + 16, 7, 0, Math.PI * 2); ctx.fill();
-            }
-            else if (spec.type === 'oled_display') {
-                ctx.fillStyle = spec.color; ctx.fillRect(x, y, spec.width, spec.height); // Frame
-                ctx.fillStyle = '#0077b6'; ctx.fillRect(x + 3, y + 3, spec.width - 6, spec.height - 12); // Illuminated Matrix Display
-                ctx.fillStyle = '#ffffff'; ctx.font = "6px monospace"; ctx.fillText("I2C ADDR", x + 6, y + 12);
-                ctx.fillStyle = '#9ca3af'; // Header pins
-                ctx.fillRect(x + (spec.width/2) - 8, y + spec.height - 3, 16, 3);
-            }
-            else if (spec.type === 'potentiometer') {
-                ctx.fillStyle = '#4b5563'; ctx.fillRect(x + 3, y + 16, spec.width - 6, spec.height - 16); // Structural housing
-                ctx.fillStyle = spec.color; ctx.beginPath(); ctx.arc(x + spec.width/2, y + 10, 9, 0, Math.PI*2); ctx.fill(); // Rotary dial knob
-                ctx.fillStyle = '#1f2937'; ctx.fillRect(x + spec.width/2 - 2, y + 2, 4, 8); // Selector indicator pointer
-                ctx.strokeStyle = '#d1d5db'; // Base pins
-                ctx.beginPath(); ctx.moveTo(x + 4, y + spec.height); ctx.lineTo(x + 4, y + spec.height + 6);
-                ctx.moveTo(x + spec.width/2, y + spec.height); ctx.lineTo(x + spec.width/2, y + spec.height + 6);
-                ctx.moveTo(x + spec.width - 4, y + spec.height); ctx.lineTo(x + spec.width - 4, y + spec.height + 6); ctx.stroke();
-            }
-            else if (spec.type === 'relay_5v') {
-                ctx.fillStyle = spec.color; ctx.fillRect(x, y, spec.width, spec.height); // Plastic core box
-                ctx.fillStyle = '#ffffff'; ctx.fillRect(x + 4, y + 4, spec.width - 8, 2); // Text markings lines
-            }
-            else if (spec.type === 'battery_9v') {
-                ctx.fillStyle = spec.color; ctx.fillRect(x, y + 6, spec.width, spec.height - 6);
-                ctx.fillStyle = '#f59e0b'; ctx.fillRect(x, y + 6, spec.width, 5);
-                ctx.fillStyle = '#9ca3af'; ctx.fillRect(x + 4, y, 6, 6);
-                ctx.beginPath(); ctx.arc(x + spec.width - 7, y + 3, 4, 0, Math.PI*2); ctx.fill();
-            }
-
-            // Instrumentation coordinate metadata text overlay
-            ctx.fillStyle = 'rgba(255,255,255,0.4)';
-            ctx.font = "9px 'Fira Code', monospace";
-            ctx.fillText(spec.label, x - 5, y - 8);
+        function placeFood() {
+            let candidate;
+            do {
+                candidate = {
+                    x: Math.floor(Math.random() * COLS),
+                    y: Math.floor(Math.random() * ROWS),
+                    type: FOOD_TYPES[Math.floor(Math.random() * FOOD_TYPES.length)]
+                };
+            } while (snake.some(s => s.x === candidate.x && s.y === candidate.y));
+            food = candidate;
         }
 
-        function loop() {
-            if (isGameOver) return;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        function setDirection(dx, dy) {
+            // Prevent reversing directly into the snake's own body
+            if (dx === -direction.x && dy === -direction.y) return;
+            nextDirection = { x: dx, y: dy };
+            if (!hasStarted) hasStarted = true;
+        }
 
+        window.addEventListener('keydown', (e) => {
+            switch (e.code) {
+                case 'ArrowUp': case 'KeyW': e.preventDefault(); setDirection(0, -1); break;
+                case 'ArrowDown': case 'KeyS': e.preventDefault(); setDirection(0, 1); break;
+                case 'ArrowLeft': case 'KeyA': e.preventDefault(); setDirection(-1, 0); break;
+                case 'ArrowRight': case 'KeyD': e.preventDefault(); setDirection(1, 0); break;
+                case 'Space': case 'Enter':
+                    e.preventDefault();
+                    if (isGameOver) { initGame(); hasStarted = true; }
+                    break;
+            }
+        });
+
+        // Touch swipe controls for mobile
+        let touchStartX = 0, touchStartY = 0;
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (isGameOver) { initGame(); hasStarted = true; return; }
+            const t = e.touches[0];
+            touchStartX = t.clientX;
+            touchStartY = t.clientY;
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            const t = e.changedTouches[0];
+            const dx = t.clientX - touchStartX;
+            const dy = t.clientY - touchStartY;
+            if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return; // treat as tap, ignore
+            if (Math.abs(dx) > Math.abs(dy)) {
+                setDirection(dx > 0 ? 1 : -1, 0);
+            } else {
+                setDirection(0, dy > 0 ? 1 : -1);
+            }
+        }, { passive: false });
+
+        canvas.addEventListener('click', () => {
+            if (isGameOver) { initGame(); hasStarted = true; }
+        });
+
+        function drawGrid() {
             // Creative Schematic Blueprint Grid Line Matrix
             ctx.strokeStyle = 'rgba(56, 189, 248, 0.04)'; ctx.lineWidth = 1;
             for (let i = 0; i < canvas.width; i += 30) {
@@ -366,119 +379,182 @@
             for (let j = 0; j < canvas.height; j += 30) {
                 ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(canvas.width, j); ctx.stroke();
             }
-
-            // Heavy PCB terminal trace connection line (Ground Floor Track)
-            ctx.strokeStyle = "#30363d"; ctx.lineWidth = 4;
-            ctx.beginPath(); ctx.moveTo(0, 230); ctx.lineTo(canvas.width, 230); ctx.stroke();
-
-            // Handle kinematic acceleration curves
-            robot.velocity += robot.gravity; robot.y += robot.velocity;
-            if (robot.y > 165) { robot.y = 165; robot.velocity = 0; robot.isJumping = false; }
-            if (!robot.isJumping) robot.animCycle += 0.24;
-
-            // --- CHROME DINO-STYLE HIGH-FIDELITY MECHATRONIC SKELETON ANDROID ENGINE ---
-            const rx = robot.x, ry = robot.y;
-            
-            // Dynamic leg rotation linkages (oscillating bone pivots)
-            let legL = Math.sin(robot.animCycle) * 14;
-            let legR = Math.cos(robot.animCycle) * 14;
-            if (robot.isJumping) { legL = 10; legR = -10; }
-
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = '#e2e8f0'; // Outer visible skeleton bone rods
-            
-            // Left Structural Skeleton Leg Assembly (Thigh, Joint, Foot)
-            ctx.beginPath();
-            ctx.moveTo(rx + 14, ry + 44); // Hip link joint
-            ctx.lineTo(rx + 10 + legL * 0.6, ry + 54); // Knee pivot
-            ctx.lineTo(rx + 8 + legL, ry + 65); // Foot plate link
-            ctx.stroke();
-
-            // Right Structural Skeleton Leg Assembly
-            ctx.strokeStyle = '#64748b'; // Darker background bone shading layer
-            ctx.beginPath();
-            ctx.moveTo(rx + 30, ry + 44);
-            ctx.lineTo(rx + 26 + legR * 0.6, ry + 54);
-            ctx.lineTo(rx + 24 + legR, ry + 65);
-            ctx.stroke();
-
-            // Open Backbone Matrix Frame (Central Vertebrae Grid Columns)
-            ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 4;
-            ctx.beginPath(); ctx.moveTo(rx + 22, ry + 12); ctx.lineTo(rx + 22, ry + 44); ctx.stroke(); // Vertebral Column
-            
-            // Rib-cage Structural Bars Layer (Horizontal conduit panels)
-            ctx.lineWidth = 2.5;
-            ctx.beginPath(); ctx.moveTo(rx + 10, ry + 18); ctx.lineTo(rx + 34, ry + 18); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(rx + 8, ry + 26); ctx.lineTo(rx + 36, ry + 26); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(rx + 12, ry + 34); ctx.lineTo(rx + 32, ry + 34); ctx.stroke();
-
-            // Glowing Integrated PCB Micro-Controller Hub (Dino Core Energy Cluster)
-            ctx.fillStyle = '#58a6ff'; ctx.shadowBlur = 10; ctx.shadowColor = '#58a6ff';
-            ctx.beginPath(); ctx.arc(rx + 22, ry + 26, 6, 0, Math.PI * 2); ctx.fill();
-            ctx.shadowBlur = 0; // Disable shadow glow maps for downstream layouts
-
-            // Articulated Skeleton Arm Claws (Industrial manipulator links)
-            let armSwing = Math.sin(robot.animCycle) * 12;
-            if (robot.isJumping) armSwing = -18;
-            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2.5;
-            ctx.beginPath();
-            ctx.moveTo(rx + 24, ry + 16); // Shoulder link
-            ctx.lineTo(rx + 36 + armSwing * 0.5, ry + 24); // Elbow link
-            ctx.lineTo(rx + 42 + armSwing, ry + 32); // Claw gripper endpoint
-            ctx.stroke();
-
-            // Mechanical Articulated Skull Module Head Assembly
-            ctx.fillStyle = '#cbd5e1'; ctx.fillRect(rx + 12, ry - 6, 22, 14); // Structural Upper Jaw Cranium
-            ctx.fillStyle = '#94a3b8'; ctx.fillRect(rx + 16, ry + 8, 14, 4);  // Hinged Lower Mandible Jaw
-            ctx.fillStyle = '#0a140d'; ctx.fillRect(rx + 26, ry - 2, 5, 4);   // Dark socket cutout cavity
-            ctx.fillStyle = '#39ff14'; ctx.fillRect(rx + 27, ry - 1, 3, 2);   // Neon visor sensor node optics (glowing lens)
-
-            // --- COMPONENT VECTOR MATRIX SYSTEM UPDATES ---
-            spawnTimer++;
-            if (spawnTimer > Math.max(45, 95 - score / 6)) {
-                let rSpec = componentTypes[Math.floor(Math.random() * componentTypes.length)];
-                obstacles.push({
-                    x: canvas.width, y: 230 - rSpec.height,
-                    width: rSpec.width, height: rSpec.height,
-                    type: rSpec.type, color: rSpec.color, label: rSpec.label
-                });
-                spawnTimer = 0;
-            }
-
-            for (let i = obstacles.length - 1; i >= 0; i--) {
-                let o = obstacles[i]; o.x -= gameSpeed;
-                drawComponent(ctx, o.x, o.y, o);
-
-                // Accurate bounding grid-box physical collision mapping layout
-                if (rx < o.x + o.width && rx + robot.width > o.x &&
-                    ry < o.y + o.height && ry + robot.height > o.y) {
-                    isGameOver = true;
-                    
-                    // Hardware Crash Simulation Graphic Overlay Panel
-                    ctx.fillStyle = "rgba(13, 17, 23, 0.94)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = '#f85149'; ctx.font = "bold 20px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign = "center";
-                    ctx.fillText("HARDWARE FAULT: CRITICAL SKELETON CONNECTOR SHORT-CIRCUIT", canvas.width/2, canvas.height/2 - 12);
-                    ctx.fillStyle = '#c9d1d9'; ctx.font = "13px 'Fira Code', monospace";
-                    ctx.fillText("Click Canvas Frame or Tap Spacebar to Re-deploy Fresh Unit Structure", canvas.width/2, canvas.height/2 + 22);
-                }
-
-                if (o.x + o.width < 0) {
-                    obstacles.splice(i, 1);
-                    score += 10;
-                    document.getElementById('currentScore').textContent = String(score).padStart(4, '0');
-                    
-                    // Sync High Score instantly if the current runtime breaks records
-                    if (score > highScore) {
-                        highScore = score;
-                        localStorage.setItem('ece_dino_high_score', highScore);
-                        document.getElementById('highScore').textContent = String(highScore).padStart(4, '0');
-                    }
-                    if (score % 120 === 0) gameSpeed += 0.55;
-                }
-            }
-            requestAnimationFrame(loop);
         }
-        loop();
-    </script>
-</body>
-</html>
+
+        // Real electrical components the robotic snake can "eat"
+        const FOOD_TYPES = ['resistor', 'capacitor', 'ic_chip', 'battery', 'sensor', 'relay', 'potentiometer'];
+        const FOOD_GLOW = {
+            resistor: '#e07a5f', capacitor: '#2a6f97', ic_chip: '#9ca3af',
+            battery: '#f59e0b', sensor: '#00b4d8', relay: '#70e000', potentiometer: '#0a9396'
+        };
+
+        function drawFood() {
+            const fx = food.x * CELL, fy = food.y * CELL;
+            const s = CELL / 20; // icons are authored for a 20px cell; scale to fit the live cell size
+            ctx.save();
+            ctx.translate(fx, fy);
+            ctx.scale(s, s);
+            ctx.shadowBlur = 7 / s; ctx.shadowColor = FOOD_GLOW[food.type] || '#58a6ff';
+
+            switch (food.type) {
+                case 'resistor':
+                    ctx.strokeStyle = '#a8a29e'; ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.moveTo(1, 10); ctx.lineTo(19, 10); ctx.stroke();
+                    ctx.fillStyle = '#d4a276'; ctx.fillRect(5, 6, 10, 8);
+                    ctx.fillStyle = '#cc0000'; ctx.fillRect(7, 6, 2, 8);
+                    ctx.fillStyle = '#ccaa00'; ctx.fillRect(11, 6, 2, 8);
+                    break;
+                case 'capacitor':
+                    ctx.fillStyle = '#2a6f97'; ctx.fillRect(6, 3, 8, 13);
+                    ctx.fillStyle = '#9ca3af'; ctx.fillRect(6, 3, 8, 3);
+                    ctx.fillStyle = '#ffffff'; ctx.fillRect(9, 7, 2, 7);
+                    break;
+                case 'ic_chip':
+                    ctx.fillStyle = '#1c1d22'; ctx.fillRect(4, 5, 12, 11);
+                    ctx.fillStyle = '#d1d5db';
+                    for (let i = 0; i < 3; i++) {
+                        ctx.fillRect(6 + i * 4, 2, 2, 3);
+                        ctx.fillRect(6 + i * 4, 16, 2, 3);
+                    }
+                    ctx.fillStyle = '#374151';
+                    ctx.beginPath(); ctx.arc(6, 8, 1.4, 0, Math.PI * 2); ctx.fill();
+                    break;
+                case 'battery':
+                    ctx.fillStyle = '#2b2d42'; ctx.fillRect(5, 4, 10, 13);
+                    ctx.fillStyle = '#f59e0b'; ctx.fillRect(5, 4, 10, 3);
+                    ctx.fillStyle = '#9ca3af'; ctx.fillRect(8, 1, 4, 3);
+                    break;
+                case 'sensor':
+                    ctx.fillStyle = '#104f55'; ctx.fillRect(2, 7, 16, 9);
+                    ctx.fillStyle = '#9ca3af';
+                    ctx.beginPath(); ctx.arc(7, 11, 3.6, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(13, 11, 3.6, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#111827';
+                    ctx.beginPath(); ctx.arc(7, 11, 2.2, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(13, 11, 2.2, 0, Math.PI * 2); ctx.fill();
+                    break;
+                case 'relay':
+                    ctx.fillStyle = '#00b4d8'; ctx.fillRect(3, 4, 14, 12);
+                    ctx.fillStyle = '#ffffff'; ctx.fillRect(5, 7, 10, 1.4);
+                    ctx.fillStyle = '#ffffff'; ctx.fillRect(5, 11, 10, 1.4);
+                    break;
+                case 'potentiometer':
+                    ctx.fillStyle = '#4b5563'; ctx.fillRect(5, 9, 10, 8);
+                    ctx.fillStyle = '#0a9396';
+                    ctx.beginPath(); ctx.arc(10, 7, 5.5, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#1f2937'; ctx.fillRect(9, 2, 2, 5);
+                    break;
+            }
+            ctx.restore();
+        }
+
+        function drawSnake() {
+            ctx.save();
+            ctx.lineCap = 'round';
+
+            // Articulated metal linkage rods connecting each robotic body joint
+            for (let i = 0; i < snake.length - 1; i++) {
+                const a = snake[i], b = snake[i + 1];
+                const ax = a.x * CELL + CELL / 2, ay = a.y * CELL + CELL / 2;
+                const bx = b.x * CELL + CELL / 2, by = b.y * CELL + CELL / 2;
+                ctx.strokeStyle = '#334155';
+                ctx.lineWidth = 7;
+                ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+            }
+
+            // Bolted robotic joint segments (body) + head
+            snake.forEach((seg, i) => {
+                const cx = seg.x * CELL + CELL / 2, cy = seg.y * CELL + CELL / 2;
+                if (i === 0) {
+                    drawRoboHead(cx, cy);
+                } else {
+                    const r = 8.5;
+                    ctx.fillStyle = i % 2 === 0 ? '#64748b' : '#475569';
+                    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1.4; ctx.stroke();
+
+                    // Center rivet/bolt
+                    ctx.fillStyle = '#0f172a';
+                    ctx.beginPath(); ctx.arc(cx, cy, 2.6, 0, Math.PI * 2); ctx.fill();
+
+                    // Small chrome highlight
+                    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+                    ctx.beginPath(); ctx.arc(cx - 2.5, cy - 2.5, 2, 0, Math.PI * 2); ctx.fill();
+
+                    // Faint energy pulse tracking down the spine
+                    if (i === snake.length - 1) {
+                        ctx.fillStyle = '#f59e0b';
+                        ctx.beginPath(); ctx.arc(cx, cy, 1.6, 0, Math.PI * 2); ctx.fill();
+                    }
+                }
+            });
+            ctx.restore();
+        }
+
+        function drawRoboHead(cx, cy) {
+            const angle = Math.atan2(direction.y, direction.x);
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(angle);
+
+            // Chassis
+            ctx.shadowBlur = 9; ctx.shadowColor = '#58a6ff';
+            ctx.fillStyle = '#94a3b8';
+            if (ctx.roundRect) {
+                ctx.beginPath(); ctx.roundRect(-9, -8, 18, 16, 4); ctx.fill();
+            } else {
+                ctx.fillRect(-9, -8, 18, 16);
+            }
+            ctx.shadowBlur = 0;
+
+            // Panel line
+            ctx.strokeStyle = '#475569'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(-9, 0); ctx.lineTo(9, 0); ctx.stroke();
+
+            // Glowing forward optic/visor
+            ctx.fillStyle = '#39ff14';
+            ctx.shadowBlur = 6; ctx.shadowColor = '#39ff14';
+            ctx.fillRect(3, -4, 5, 8);
+            ctx.shadowBlur = 0;
+
+            // Side rivets
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath(); ctx.arc(-5, -5, 1.3, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(-5, 5, 1.3, 0, Math.PI * 2); ctx.fill();
+
+            // Antenna
+            ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(-3, -8); ctx.lineTo(-4, -13); ctx.stroke();
+            ctx.fillStyle = '#58a6ff';
+            ctx.beginPath(); ctx.arc(-4, -14, 1.6, 0, Math.PI * 2); ctx.fill();
+
+            ctx.restore();
+        }
+
+        function showGameOver() {
+            ctx.fillStyle = "rgba(13, 17, 23, 0.94)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#f85149'; ctx.font = "bold 20px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign = "center";
+            ctx.fillText("SIGNAL FAULT: TRACE COLLISION DETECTED", canvas.width / 2, canvas.height / 2 - 12);
+            ctx.fillStyle = '#c9d1d9'; ctx.font = "13px 'Fira Code', monospace";
+            ctx.fillText("Click, Tap, or Press Space to Re-route a Fresh Signal Trace", canvas.width / 2, canvas.height / 2 + 22);
+        }
+
+        function showStartPrompt() {
+            ctx.fillStyle = 'rgba(13, 17, 23, 0.75)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#58a6ff'; ctx.font = "bold 18px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign = "center";
+            ctx.fillText("PRESS AN ARROW KEY OR SWIPE TO BEGIN ROUTING", canvas.width / 2, canvas.height / 2);
+        }
+
+        function update() {
+            direction = nextDirection;
+            const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+            // Wall collision
+            if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) {
+                isGameOver = true;
+                return;
+            }
+            // Self collision
+            if (snake.some(s => s.x === head.x && s.y === head.y)) {
+                isGameOver = true;
+                return;
