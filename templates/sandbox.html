@@ -116,41 +116,6 @@
             color: var(--text-main);
         }
 
-        .dpad {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .dpad {
-                display: grid;
-                grid-template-columns: repeat(3, 58px);
-                grid-template-rows: repeat(3, 58px);
-                gap: 0.5rem;
-                justify-content: center;
-                margin: 1.1rem auto 0.2rem auto;
-            }
-            .dpad-btn {
-                background: rgba(88, 166, 255, 0.08);
-                border: 1px solid rgba(88, 166, 255, 0.3);
-                border-radius: 12px;
-                color: #58a6ff;
-                font-size: 1.3rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                touch-action: none;
-                -webkit-tap-highlight-color: transparent;
-                user-select: none;
-            }
-            .dpad-btn:active {
-                background: rgba(88, 166, 255, 0.25);
-            }
-            #dpadUp { grid-column: 2; grid-row: 1; }
-            #dpadLeft { grid-column: 1; grid-row: 2; }
-            #dpadRight { grid-column: 3; grid-row: 2; }
-            #dpadDown { grid-column: 2; grid-row: 3; }
-        }
-
         .inventory-dashboard {
             margin-top: 2rem;
             display: grid;
@@ -259,13 +224,7 @@
             <canvas id="gameCanvas" width="900" height="280"></canvas>
             <div class="control-hint">
                 <i class="fa-solid fa-gamepad" style="color: #58a6ff;"></i>
-                Use <kbd>&#8592;</kbd> <kbd>&#8593;</kbd> <kbd>&#8594;</kbd> <kbd>&#8595;</kbd> or the pad below to steer the trace. Tap to start or restart.
-            </div>
-            <div class="dpad">
-                <button type="button" id="dpadUp" class="dpad-btn" aria-label="Steer up"><i class="fa-solid fa-chevron-up"></i></button>
-                <button type="button" id="dpadLeft" class="dpad-btn" aria-label="Steer left"><i class="fa-solid fa-chevron-left"></i></button>
-                <button type="button" id="dpadRight" class="dpad-btn" aria-label="Steer right"><i class="fa-solid fa-chevron-right"></i></button>
-                <button type="button" id="dpadDown" class="dpad-btn" aria-label="Steer down"><i class="fa-solid fa-chevron-down"></i></button>
+                Use <kbd>&#8592;</kbd> <kbd>&#8593;</kbd> <kbd>&#8594;</kbd> <kbd>&#8595;</kbd> or swipe on mobile to steer the trace. Tap/click to start or restart.
             </div>
         </div>
 
@@ -313,9 +272,9 @@
                 // Use nearly the full viewport width and a generous chunk of
                 // viewport height so the board fills the screen on phones.
                 targetWidth = availWidth;
-                targetHeight = Math.floor(Math.min(window.innerHeight * 0.5, availWidth * 1.0));
-                CELL = 24; // Bigger cells on mobile = fewer, easier-to-hit moves per swipe
-                MOVE_EVERY = 12; // Noticeably slower tick rate so touch input can keep up
+                targetHeight = Math.floor(Math.min(window.innerHeight * 0.48, availWidth * 1.0));
+                CELL = 24; // Bigger cells on mobile = fewer, easier-to-hit swipes
+                MOVE_EVERY = 16; // Much slower tick rate so touch/swipe input can keep up
             } else {
                 targetWidth = availWidth;
                 targetHeight = Math.floor(availWidth * (280 / 900));
@@ -401,7 +360,7 @@
             const t = e.changedTouches[0];
             const dx = t.clientX - touchStartX;
             const dy = t.clientY - touchStartY;
-            if (Math.abs(dx) < 18 && Math.abs(dy) < 18) return; // treat as tap, ignore
+            if (Math.abs(dx) < 12 && Math.abs(dy) < 12) return; // treat as tap, ignore
             if (Math.abs(dx) > Math.abs(dy)) {
                 setDirection(dx > 0 ? 1 : -1, 0);
             } else {
@@ -412,22 +371,6 @@
         canvas.addEventListener('click', () => {
             if (isGameOver) { initGame(); hasStarted = true; }
         });
-
-        // On-screen D-pad — more reliable than swipe gestures for quick turns on phones
-        function bindDpadButton(el, dx, dy) {
-            if (!el) return;
-            const trigger = (e) => {
-                e.preventDefault();
-                if (isGameOver) { initGame(); hasStarted = true; return; }
-                setDirection(dx, dy);
-            };
-            el.addEventListener('touchstart', trigger, { passive: false });
-            el.addEventListener('click', trigger);
-        }
-        bindDpadButton(document.getElementById('dpadUp'), 0, -1);
-        bindDpadButton(document.getElementById('dpadDown'), 0, 1);
-        bindDpadButton(document.getElementById('dpadLeft'), -1, 0);
-        bindDpadButton(document.getElementById('dpadRight'), 1, 0);
 
         function drawGrid() {
             // Creative Schematic Blueprint Grid Line Matrix
