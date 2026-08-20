@@ -195,6 +195,34 @@ h3, .card-title {
     color: var(--accent-blue);                
 }
 
+.social-icons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.social-icons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    background: rgba(59, 130, 246, 0.08);
+    border: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.social-icons a:hover {
+    color: var(--accent-blue);
+    border-color: var(--border-color-hover);
+    transform: translateY(-2px);
+}
+
 /* ==========================================================================
    STRUCTURAL GRID LAYOUTS & CONTAINERS
    ========================================================================== */
@@ -315,6 +343,16 @@ h3, .card-title {
 
     .navbar nav a {
         font-size: 0.85rem;
+    }
+
+    .social-icons {
+        gap: 0.75rem;
+    }
+
+    .social-icons a {
+        width: 30px;
+        height: 30px;
+        font-size: 0.875rem;
     }
 
     .logo-wrapper {
