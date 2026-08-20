@@ -22,12 +22,42 @@
             padding: 0 3rem;
             position: relative;
             z-index: 2;
+            box-sizing: border-box;
         }
         .header-centered-block {
-            text-align: center; /* Aligned exactly in the middle as requested */
+            text-align: center;
             max-width: 800px;
             margin: 0 auto 4rem auto;
         }
+
+        /* Sub-section header (Upcoming / Past) */
+        .events-section { margin-bottom: 5rem; }
+        .events-section:last-child { margin-bottom: 0; }
+        .events-section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .events-section-header h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #f1f5f9;
+            letter-spacing: -0.3px;
+            white-space: nowrap;
+            margin: 0;
+        }
+        .events-section-header .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(0,245,255,0.25), transparent);
+        }
+        .events-section-header.past .line {
+            background: linear-gradient(90deg, rgba(148,163,184,0.25), transparent);
+        }
+        .events-section-header i { color: #00f5ff; font-size: 1.2rem; }
+        .events-section-header.past i { color: #64748b; }
+
         .panoramic-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -48,10 +78,210 @@
             border-color: #00f5ff;
             box-shadow: 0 30px 70px rgba(0, 245, 255, 0.12);
         }
+        .panoramic-card.featured { grid-column: 1 / -1; }
         .glow-bar {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 4px;
             background: linear-gradient(90deg, #00b4d8, #00f5ff);
+        }
+        .glow-bar.past { background: linear-gradient(90deg, #475569, #64748b); }
+
+        .event-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .event-tag {
+            background: rgba(0,245,255,0.1);
+            color: #00f5ff;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            border: 1px solid rgba(0,245,255,0.2);
+            white-space: nowrap;
+        }
+        .event-tag.past {
+            background: rgba(148,163,184,0.1);
+            color: #94a3b8;
+            border: 1px solid rgba(148,163,184,0.2);
+        }
+
+        .event-status {
+            color: #00f5ff;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+        .event-status.past { color: #94a3b8; }
+
+        .event-desc {
+            color: #cbd5e1;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .event-details summary {
+            cursor: pointer;
+            color: #00f5ff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            list-style: none;
+            padding: 0.6rem 0;
+            border-top: 1px solid rgba(0,245,255,0.15);
+        }
+        .event-details summary::-webkit-details-marker { display: none; }
+        .event-details summary::after {
+            content: "\f078";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            float: right;
+            transition: transform 0.3s ease;
+        }
+        .event-details[open] summary::after { transform: rotate(180deg); }
+
+        .event-details-body {
+            padding-top: 1.25rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .event-details-body h4 {
+            color: #f1f5f9;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.3px;
+        }
+
+        .event-details-body ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .event-details-body li {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            margin-bottom: 0.45rem;
+            padding-left: 1.1rem;
+            position: relative;
+        }
+
+        .event-details-body li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.55rem;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #64748b;
+        }
+        .panoramic-card:not(.featured) .event-details-body li::before { background: #00f5ff; }
+
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0,245,255,0.15);
+        }
+
+        .event-info-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .event-info-strip span i { color: #00f5ff; margin-right: 0.4rem; }
+
+        .register-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #00b4d8, #00f5ff);
+            color: #020306;
+            font-weight: 800;
+            font-size: 0.875rem;
+            letter-spacing: 0.3px;
+            padding: 0.75rem 1.6rem;
+            border-radius: 10px;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,245,255,0.25);
+        }
+
+        .recap-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            border: 1px solid rgba(148,163,184,0.25);
+            padding: 0.6rem 1.1rem;
+            border-radius: 10px;
+            transition: border-color 0.25s ease, color 0.25s ease;
+        }
+        .recap-link:hover {
+            color: #00f5ff;
+            border-color: rgba(0,245,255,0.35);
+        }
+
+        /* ==================================================================
+           MOBILE FIX
+           ================================================================== */
+        @media (max-width: 768px) {
+            .panoramic-wrapper {
+                margin: 6rem auto 3rem auto;
+                padding: 0 1.25rem;
+            }
+            .header-centered-block {
+                margin-bottom: 2.5rem;
+            }
+            .events-section { margin-bottom: 3.5rem; }
+            .events-section-header h3 { font-size: 1.15rem; }
+            .panoramic-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .panoramic-card {
+                padding: 2rem 1.5rem;
+                border-radius: 18px;
+            }
+            .event-meta-row {
+                margin-bottom: 1.5rem;
+            }
+            .event-details-body {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .event-footer, .event-cta-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .register-btn, .recap-link {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -78,36 +308,200 @@
     <div class="panoramic-wrapper">
         <div class="header-centered-block">
             <h2 class="section-title" style="margin: 0; font-size: 3rem; font-weight: 800; letter-spacing: -1px;">Initiatives & Events</h2>
-            <p style="color: #94a3b8; font-size: 1.1rem; margin-top: 1rem; line-height: 1.6;">Explore upcoming tech challenges, structured engineering bootcamps, and full-stack mechanical hackathons hosted across campus.</p>
+            <p style="color: #94a3b8; font-size: 1.1rem; margin-top: 1rem; line-height: 1.6;">Explore upcoming tech challenges, and look back at the hackathons and ideathons our chapter has hosted on campus.</p>
         </div>
 
-        <div class="panoramic-grid">
-            <div class="panoramic-card">
-                <div class="glow-bar"></div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <span style="background: rgba(0,245,255,0.1); color: #00f5ff; padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; border: 1px solid rgba(0,245,255,0.2);">HARDWARE RUNTIME</span>
-                    <i class="fa-solid fa-microchip" style="color: #00f5ff; font-size: 1.5rem;"></i>
-                </div>
-                <h3 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 0.75rem;">Hands-on Arduino Bootcamp</h3>
-                <p style="color: #00f5ff; font-size: 0.9rem; margin-bottom: 1.5rem;"><i class="fa-regular fa-calendar-check"></i> Registration Active</p>
-                <p style="color: #cbd5e1; font-size: 1rem; line-height: 1.7; margin: 0;">
-                    An immersive engineering sprint where you write microcontrollers code, route real-time sensors, and wire up motors to design direct robotic mechanisms.
-                </p>
+        <!-- ================= UPCOMING EVENTS ================= -->
+        <div class="events-section">
+            <div class="events-section-header">
+                <i class="fa-solid fa-tower-broadcast"></i>
+                <h3>Upcoming Events</h3>
+                <div class="line"></div>
             </div>
 
-            <div class="panoramic-card">
-                <div class="glow-bar"></div>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <span style="background: rgba(0,180,216,0.1); color: #00b4d8; padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; border: 1px solid rgba(0,180,216,0.2);">DESIGN SPRINT</span>
-                    <i class="fa-solid fa-lightbulb" style="color: #00b4d8; font-size: 1.5rem;"></i>
+            <div class="panoramic-grid">
+                <!-- RoboCraft Hackathon -->
+                <div class="panoramic-card featured">
+                    <div class="glow-bar"></div>
+                    <div class="event-meta-row">
+                        <span class="event-tag"><i class="fa-solid fa-robot" style="margin-right:6px;"></i>FLAGSHIP HACKATHON</span>
+                        <i class="fa-solid fa-microchip" style="color: #00f5ff; font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 0.5rem;">RoboCraft — 2-Day Robotics Hackathon</h3>
+                    <p class="event-status"><i class="fa-regular fa-calendar-check"></i> Dates: TBA &nbsp;·&nbsp; Venue: TBA</p>
+                    <p class="event-desc">
+                        Code, build, and innovate! Teams of 2–4 design and construct a working robotic creation from scratch, live over two days — AI, automation, IoT, or pure robotics magic, your theme, your call. Bring a functional prototype, sensors and actuators driven by real software, to the judging floor.
+                    </p>
+
+                    <details class="event-details">
+                        <summary>Full Details — Rules, Prizes & Project Ideas</summary>
+                        <div class="event-details-body">
+                            <div>
+                                <h4>What You'll Gain</h4>
+                                <ul>
+                                    <li>Hands-on build time with Arduino, Raspberry Pi, sensors & actuators</li>
+                                    <li>Mentorship from experienced mentors and faculty</li>
+                                    <li>Networking with fellow robotics enthusiasts and industry experts</li>
+                                    <li>A portfolio-ready project for your resume and GitHub</li>
+                                    <li>IEEE RAS participation certificate for every team member</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4>Rules</h4>
+                                <ul>
+                                    <li>Teams of 2–4, open robotics theme</li>
+                                    <li>Built entirely during the event — no pre-built prototypes</li>
+                                    <li>Original code only (credited open-source libraries OK)</li>
+                                    <li>At least 1 member must attend the full event + presentation</li>
+                                    <li>Mentors can guide, but can't code or build for you</li>
+                                    <li>Submit: working prototype, live demo, source code, 5-min presentation, README</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4>Project Inspiration</h4>
+                                <ul>
+                                    <li>Autonomous obstacle-avoiding robot</li>
+                                    <li>Gesture-controlled robotic arm</li>
+                                    <li>Line-following robot with IoT</li>
+                                    <li>Self-balancing robot</li>
+                                    <li>Smart home automation robot</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4>Prizes & Recognition</h4>
+                                <ul>
+                                    <li>🥇 1st Place — Cash prize + Trophy + IEEE Feature</li>
+                                    <li>🥈 2nd Place — Cash prize + Certificate</li>
+                                    <li>🥉 3rd Place — Cash prize + Certificate</li>
+                                    <li>🌟 Best Innovation & Best Beginner Team awards</li>
+                                    <li>🎖️ IEEE RAS certificate for all participants</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </details>
+
+                    <div class="event-cta-row event-footer">
+                        <div class="event-info-strip">
+                            <span><i class="fa-solid fa-users"></i>Teams of 2–4</span>
+                            <span><i class="fa-solid fa-envelope"></i>Questions: TBA</span>
+                        </div>
+                        <a href="#" class="register-btn">Registration Opens Soon</a>
+                    </div>
                 </div>
-                <h3 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 0.75rem;">EC Campus Ideathon</h3>
-                <p style="color: #00b4d8; font-size: 0.9rem; margin-bottom: 1.5rem;"><i class="fa-regular fa-clock"></i> Commencing Phase 1</p>
-                <p style="color: #cbd5e1; font-size: 1rem; line-height: 1.7; margin: 0;">
-                    Pitch, construct, and compete! Frame creative structural blueprints solving industrial robotics, automation tracking, and mechanical control tasks.
-                </p>
             </div>
         </div>
+
+        <!-- ================= PAST EVENTS ================= -->
+        <div class="events-section">
+            <div class="events-section-header past">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <h3>Past Events</h3>
+                <div class="line"></div>
+            </div>
+
+            <div class="panoramic-grid">
+
+                <!-- UNIMATE: The Ultimate Robothon -->
+                <div class="panoramic-card">
+                    <div class="glow-bar past"></div>
+                    <div class="event-meta-row">
+                        <span class="event-tag past"><i class="fa-solid fa-robot" style="margin-right:6px;"></i>PAST EVENT · HACKATHON</span>
+                        <i class="fa-solid fa-microchip" style="color: #64748b; font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem;">UNIMATE — The Ultimate Robothon</h3>
+                    <p class="event-status past"><i class="fa-regular fa-calendar-check"></i> Concluded · April 22–23</p>
+                    <p class="event-desc">
+                        A 24-hour hackathon hosted by IEEE RAS PES EC Campus that tested participants' technical skills and innovative spirit across defence, disaster-management, agri-tech, and healthcare. Teams built through the night, with a panel of judges and mentors guiding them to the finish line.
+                    </p>
+
+                    <details class="event-details">
+                        <summary>Event Recap</summary>
+                        <div class="event-details-body">
+                            <div>
+                                <h4>Details</h4>
+                                <ul>
+                                    <li>Team size: 2–4</li>
+                                    <li>Venue: MRD Student Center, Electronic City Campus</li>
+                                    <li>Timings: 10 AM (Apr 22) – 12:30 PM (Apr 23)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4>Themes</h4>
+                                <ul>
+                                    <li>Defence</li>
+                                    <li>Disaster management</li>
+                                    <li>Agri-tech</li>
+                                    <li>Healthcare</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4>Highlights</h4>
+                                <ul>
+                                    <li>24 hours of non-stop building and mentorship</li>
+                                    <li>Guided by a panel of experienced judges and mentors</li>
+                                    <li>Talent, passion, and guidance came together to shape standout projects</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </details>
+
+                    <div class="event-footer">
+                        <div class="event-info-strip">
+                            <span><i class="fa-solid fa-users"></i>Teams of 2–4</span>
+                        </div>
+                        <a href="https://www.instagram.com/ieeeras.studentchapter.pesuecc/" target="_blank" rel="noopener" class="recap-link">
+                            <i class="fa-brands fa-instagram"></i> See recap on Instagram
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Health-Spark -->
+                <div class="panoramic-card">
+                    <div class="glow-bar past"></div>
+                    <div class="event-meta-row">
+                        <span class="event-tag past"><i class="fa-solid fa-heart-pulse" style="margin-right:6px;"></i>PAST EVENT · IDEATHON</span>
+                        <i class="fa-solid fa-brain" style="color: #64748b; font-size: 1.5rem;"></i>
+                    </div>
+                    <h3 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem;">Health-Spark</h3>
+                    <p class="event-status past"><i class="fa-regular fa-calendar-check"></i> Concluded · Oct 7–8, 2023</p>
+                    <p class="event-desc">
+                        A 16-hour ideathon born from a collaboration between IEEE RAS and WEAL ECC — a phenomenal fusion of health and tech innovation, bringing together two of EC Campus's biggest student communities for a single night of building.
+                    </p>
+
+                    <details class="event-details">
+                        <summary>Event Recap</summary>
+                        <div class="event-details-body">
+                            <div>
+                                <h4>Details</h4>
+                                <ul>
+                                    <li>Format: 16-hour Ideathon</li>
+                                    <li>Date & time: 7th–8th Oct 2023, 5 PM – 10 AM</li>
+                                    <li>Venue: MRD Student Center</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4>Collaboration</h4>
+                                <ul>
+                                    <li>Co-hosted by IEEE RAS PES EC Campus and WEAL ECC</li>
+                                    <li>Focus: health and tech innovation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </details>
+
+                    <div class="event-footer">
+                        <div class="event-info-strip">
+                            <span><i class="fa-solid fa-handshake"></i>IEEE RAS × WEAL ECC</span>
+                        </div>
+                        <a href="https://www.instagram.com/ieeeras.studentchapter.pesuecc/" target="_blank" rel="noopener" class="recap-link">
+                            <i class="fa-brands fa-instagram"></i> See recap on Instagram
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 
     <script>
