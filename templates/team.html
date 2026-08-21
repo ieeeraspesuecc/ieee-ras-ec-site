@@ -233,14 +233,6 @@
                     <a href="url" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
                     <a href="mailto:email id" title="Email"><i class="fa-solid fa-envelope"></i></a>
                 </div>
-                <button class="domain-toggle-btn" onclick="toggleMembers('tech-list', this)">
-                    <span>Domain Members</span> <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div id="tech-list" class="member-list">
-                    <p>• Member Name 1</p>
-                    <p>• Member Name 2</p>
-                    <p>• Member Name 3</p>
-                </div>
             </div>
 
             <div class="story-node">
@@ -251,14 +243,6 @@
                     <a href="url" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
                     <a href="url" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
                     <a href="mailto:email id" title="Email"><i class="fa-solid fa-envelope"></i></a>
-                </div>
-                <button class="domain-toggle-btn" onclick="toggleMembers('smm-list', this)">
-                    <span>Domain Members</span> <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div id="smm-list" class="member-list">
-                    <p>• Member Name 1</p>
-                    <p>• Member Name 2</p>
-                    <p>• Member Name 3</p>
                 </div>
             </div>
 
@@ -271,30 +255,11 @@
                     <a href="url" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
                     <a href="mailto:email id" title="Email"><i class="fa-solid fa-envelope"></i></a>
                 </div>
-                <button class="domain-toggle-btn" onclick="toggleMembers('design-list', this)">
-                    <span>Domain Members</span> <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div id="design-list" class="member-list">
-                    <p>• Member Name 1</p>
-                    <p>• Member Name 2</p>
-                    <p>• Member Name 3</p>
-                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Accordion Toggle Script
-        function toggleMembers(id, btn) {
-            const list = document.getElementById(id);
-            const icon = btn.querySelector('i');
-            list.classList.toggle('show');
-            if (list.classList.contains('show')) {
-                icon.className = 'fa-solid fa-chevron-up';
-            } else {
-                icon.className = 'fa-solid fa-chevron-down';
-            }
-        }
 
         /* Circuit Pulse Stream Canvas Animation */
         const canvas = document.getElementById('circuit-canvas');
