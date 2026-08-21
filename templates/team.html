@@ -260,6 +260,17 @@
     </div>
 
     <script>
+        // Accordion Toggle Script
+        function toggleMembers(id, btn) {
+            const list = document.getElementById(id);
+            const icon = btn.querySelector('i');
+            list.classList.toggle('show');
+            if (list.classList.contains('show')) {
+                icon.className = 'fa-solid fa-chevron-up';
+            } else {
+                icon.className = 'fa-solid fa-chevron-down';
+            }
+        }
 
         /* Circuit Pulse Stream Canvas Animation */
         const canvas = document.getElementById('circuit-canvas');
