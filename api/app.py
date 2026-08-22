@@ -24,11 +24,11 @@ def sandbox():
 
 @app.route('/current-members')
 def current_members():
-    return render_template('current-members.html')
+    return render_template('currentmem.html')
 
 @app.route('/past-members')
 def past_members():
-    return render_template('past-members.html')
+    return render_template('pastmem.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
