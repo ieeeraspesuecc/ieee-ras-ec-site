@@ -147,6 +147,35 @@
         .member-list.show {
             display: block;
         }
+
+        /* Roster cards (Current / Past members toggle) */
+        .roster-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .roster-card {
+            text-align: left;
+        }
+        .roster-card > i {
+            color: #00f5ff;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .roster-card h4 {
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .roster-card p.roster-sub {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body style="color: #fff; overflow-x: hidden; background-color: #030712;">
@@ -271,6 +300,36 @@
                     <a href="url" target="_blank" rel="noopener noreferrer" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
                     <a href="url" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
                     <a href="mailto:email id" title="Email"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header">Members</div>
+
+        <div class="roster-grid">
+            <div class="story-node roster-card">
+                <i class="fa-solid fa-users"></i>
+                <h4>Current Members</h4>
+                <p class="roster-sub">General body members beyond the leads above.</p>
+                <button class="domain-toggle-btn" onclick="toggleMembers('current-members-list', this)">
+                    <span>View Members</span> <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div id="current-members-list" class="member-list">
+                    <p>• [ Member Name ]</p>
+                    <p>• [ Member Name ]</p>
+                    <p>• [ Member Name ]</p>
+                </div>
+            </div>
+
+            <div class="story-node roster-card">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <h4>Past Members</h4>
+                <p class="roster-sub">Alumni of the chapter's executive committee and domain teams.</p>
+                <button class="domain-toggle-btn" onclick="toggleMembers('past-members-list', this)">
+                    <span>View Members</span> <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div id="past-members-list" class="member-list">
+                    <p>Details to be added soon.</p>
                 </div>
             </div>
         </div>
