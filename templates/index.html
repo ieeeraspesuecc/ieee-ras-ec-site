@@ -39,106 +39,6 @@
             border-color: rgba(0, 180, 216, 0.5) !important;
             box-shadow: 0 15px 40px rgba(0, 180, 216, 0.15);
         }
-
-        /* --- CONTACT US MODAL STYLES --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(5, 8, 17, 0.85);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .contact-modal {
-            background: #0b1220;
-            border: 1px solid rgba(0, 180, 216, 0.3);
-            border-radius: 20px;
-            padding: 2.5rem;
-            width: 90%;
-            max-width: 480px;
-            position: relative;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 180, 216, 0.2);
-            transform: translateY(20px) scale(0.95);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .modal-overlay.active .contact-modal {
-            transform: translateY(0) scale(1);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 1.25rem;
-            right: 1.25rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #94a3b8;
-            font-size: 1.2rem;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .modal-close:hover {
-            color: #fff;
-            background: rgba(239, 68, 68, 0.2);
-            border-color: rgba(239, 68, 68, 0.4);
-        }
-
-        .form-group {
-            margin-bottom: 1.2rem;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            color: #94a3b8;
-            margin-bottom: 0.4rem;
-            font-weight: 600;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(15, 25, 50, 0.6);
-            border: 1px solid rgba(0, 180, 216, 0.2);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
-            font-family: inherit;
-        }
-
-        .form-control:focus {
-            border-color: #00b4d8;
-            box-shadow: 0 0 10px rgba(0, 180, 216, 0.2);
-        }
-
-        textarea.form-control {
-            resize: vertical;
-            min-height: 100px;
-        }
     </style>
 </head>
 <body>
@@ -159,7 +59,6 @@
             <a href="/events">Events</a>
             <a href="/team">Team</a>
             <a href="/sandbox">Sandbox</a>
-            <a href="javascript:void(0)" class="btn-nav" id="contactBtn">Contact Us</a>
             <a href="/#join" class="btn-nav">Join Club</a>
         </nav>
     </header>
@@ -209,36 +108,8 @@
         <h2 class="section-title">Become a Member</h2>
         <p class="section-desc">Get access to exclusive tech workshops, hackathons, and local research project networks.</p>
         <br>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSed5wta-L01yy-rkL9M6FZO80_UtmdYlsEFXnKx9zRaRHwqwQ/viewform?usp=header" target="_blank" rel="noopener" class="btn-primary" style="padding: 14px 36px; font-weight: 700;">Recruiting Soon</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfCvPW05ajdeCPDAQMw1nj2JkaA1scZo531dCYA7ZhqiXmShA/viewform?usp=publish-editor" target="_blank" rel="noopener" class="btn-primary" style="padding: 14px 36px; font-weight: 700;">Recruiting Soon</a>
     </section>
-
-    <div class="modal-overlay" id="contactModal">
-        <div class="contact-modal">
-            <button class="modal-close" id="closeContactModal">&times;</button>
-            <h2 style="color: #fff; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Get in Touch</h2>
-            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 1.5rem;">Have questions or queries? Send us a message.</p>
-            
-            <form id="contactForm" onsubmit="event.preventDefault(); alert('Message submitted successfully!'); document.getElementById('contactModal').classList.remove('active');">
-                <div class="form-group">
-                    <label for="contactName">Full Name</label>
-                    <input type="text" id="contactName" class="form-control" placeholder="Enter your name" required>
-                </div>
-                <div class="form-group">
-                    <label for="contactSRN">SRN</label>
-                    <input type="text" id="contactSRN" class="form-control" placeholder="PES2UGXXXXXXX" required>
-                </div>
-                <div class="form-group">
-                    <label for="contactEmail">Email Address</label>
-                    <input type="email" id="contactEmail" class="form-control" placeholder="name@gmail.com or name@pes.edu" required>
-                </div>
-                <div class="form-group">
-                    <label for="contactMessage">Message</label>
-                    <textarea id="contactMessage" class="form-control" placeholder="Write your message..." required></textarea>
-                </div>
-                <button type="submit" id="contactSubmitBtn" class="btn-primary" style="width: 100%; margin-top: 1rem; padding: 12px; font-weight: 700; background: #3b82f6; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4); border: none;">Send Message</button>
-            </form>
-        </div>
-    </div>
 
     <footer style="text-align: center; padding: 4rem 2rem; color: #475569; font-size: 0.85rem; border-top: 1px solid rgba(0, 180, 216, 0.05); margin-top: 6rem;">
         <p>&copy; 2026 IEEE RAS PESU - EC Campus. All Rights Reserved.</p>
@@ -330,28 +201,6 @@
 
         initCanvas();
         renderEngine();
-
-        /* --- CONTACT MODAL SCRIPT LOGIC --- */
-        const contactBtn = document.getElementById('contactBtn');
-        const contactModal = document.getElementById('contactModal');
-        const closeContactModal = document.getElementById('closeContactModal');
-
-        if (contactBtn && contactModal && closeContactModal) {
-            contactBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                contactModal.classList.add('active');
-            });
-
-            closeContactModal.addEventListener('click', () => {
-                contactModal.classList.remove('active');
-            });
-
-            contactModal.addEventListener('click', (e) => {
-                if (e.target === contactModal) {
-                    contactModal.classList.remove('active');
-                }
-            });
-        }
     </script>
     
     <script src="static/script.js"></script>
