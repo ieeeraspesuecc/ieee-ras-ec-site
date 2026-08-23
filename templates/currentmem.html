@@ -17,7 +17,7 @@
         }
         .members-wrapper {
             width: 100%;
-            max-width: 900px;
+            max-width: 1400px;
             margin: 8rem auto 5rem auto;
             padding: 0 2rem;
             position: relative;
@@ -40,39 +40,83 @@
             max-width: 700px;
             margin: 0 auto 3.5rem auto;
         }
-        .members-list-card {
+        .domain-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+        }
+        .domain-card {
             background: rgba(6, 9, 20, 0.85);
             border: 1px solid rgba(0, 245, 255, 0.15);
             border-radius: 20px;
-            padding: 2rem 2.5rem;
+            padding: 1.75rem 1.75rem;
             box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
         }
-        .members-list-card ul {
+        .domain-card:hover {
+            border-color: #00f5ff;
+            transform: translateY(-3px);
+        }
+        .domain-card-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(0, 245, 255, 0.12);
+        }
+        .domain-card-header i {
+            color: #00f5ff;
+            font-size: 1.15rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0, 245, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .domain-card-header h4 {
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .domain-card ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-        .members-list-card li {
+        .domain-card li {
             color: #cbd5e1;
-            font-size: 1rem;
-            padding: 0.9rem 0;
-            border-bottom: 1px solid rgba(0, 245, 255, 0.08);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+            font-size: 0.92rem;
+            padding: 0.55rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        .members-list-card li:last-child { border-bottom: none; }
-        .members-list-card li i {
-            color: #00f5ff;
-            font-size: 0.9rem;
-        }
+        .domain-card li:last-child { border-bottom: none; }
 
+        @media (max-width: 1100px) {
+            .domain-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 700px) {
+            .domain-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .domain-grid {
+                grid-template-columns: 1fr;
+            }
+        }
         @media (max-width: 768px) {
             .members-wrapper {
                 margin: 6rem auto 3rem auto;
                 padding: 0 1.25rem;
             }
-            .members-list-card {
+            .domain-card {
                 padding: 1.5rem 1.25rem;
             }
         }
@@ -106,12 +150,61 @@
             <p style="color: #94a3b8; font-size: 1rem; margin-top: 1rem; line-height: 1.6;">General body members of IEEE RAS PES EC Campus, beyond the executive committee and domain leads.</p>
         </div>
 
-        <div class="members-list-card">
-            <ul>
-                <li><i class="fa-solid fa-user"></i>[ Member Name ]</li>
-                <li><i class="fa-solid fa-user"></i>[ Member Name ]</li>
-                <li><i class="fa-solid fa-user"></i>[ Member Name ]</li>
-            </ul>
+        <div class="domain-grid">
+            <div class="domain-card">
+                <div class="domain-card-header">
+                    <i class="fa-solid fa-sliders"></i>
+                    <h4>Operations</h4>
+                </div>
+                <ul>
+                    <li>[ Member Name ]</li>
+                    <li>[ Member Name ]</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <div class="domain-card-header">
+                    <i class="fa-solid fa-code"></i>
+                    <h4>Technical</h4>
+                </div>
+                <ul>
+                    <li>[ Member Name ]</li>
+                    <li>[ Member Name ]</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <div class="domain-card-header">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <h4>Marketing</h4>
+                </div>
+                <ul>
+                    <li>[ Member Name ]</li>
+                    <li>[ Member Name ]</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <div class="domain-card-header">
+                    <i class="fa-solid fa-hashtag"></i>
+                    <h4>Social Media</h4>
+                </div>
+                <ul>
+                    <li>[ Member Name ]</li>
+                    <li>[ Member Name ]</li>
+                </ul>
+            </div>
+
+            <div class="domain-card">
+                <div class="domain-card-header">
+                    <i class="fa-solid fa-pen-ruler"></i>
+                    <h4>Design</h4>
+                </div>
+                <ul>
+                    <li>[ Member Name ]</li>
+                    <li>[ Member Name ]</li>
+                </ul>
+            </div>
         </div>
     </div>
 
