@@ -148,7 +148,7 @@
             display: block;
         }
 
-        /* Roster cards (Current / Past members toggle) */
+        /* Roster cards (Current / Past members) */
         .roster-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -158,23 +158,61 @@
         }
         .roster-card {
             text-align: left;
+            display: flex;
+            flex-direction: column;
         }
-        .roster-card > i {
+        .roster-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(0, 245, 255, 0.08);
+            border: 1px solid rgba(0, 245, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.1rem;
+        }
+        .roster-icon i {
             color: #00f5ff;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            display: block;
+            font-size: 1.3rem;
         }
         .roster-card h4 {
             color: #fff;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 700;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.35rem;
         }
         .roster-card p.roster-sub {
             color: #94a3b8;
-            font-size: 0.85rem;
-            margin-bottom: 0;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        .roster-link-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            background: linear-gradient(90deg, #00b4d8, #00f5ff);
+            color: #020306;
+            font-weight: 800;
+            font-size: 0.875rem;
+            letter-spacing: 0.3px;
+            padding: 0.8rem 1.4rem;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .roster-link-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 245, 255, 0.25);
+        }
+        .roster-link-btn i {
+            transition: transform 0.25s ease;
+        }
+        .roster-link-btn:hover i {
+            transform: translateX(3px);
         }
     </style>
 </head>
@@ -308,19 +346,19 @@
 
         <div class="roster-grid">
             <div class="story-node roster-card">
-                <i class="fa-solid fa-users"></i>
+                <div class="roster-icon"><i class="fa-solid fa-users"></i></div>
                 <h4>Current Members</h4>
                 <p class="roster-sub">General body members beyond the leads above.</p>
-                <a href="/current-members" class="domain-toggle-btn" style="text-decoration:none; justify-content:center; gap:0.5rem;">
+                <a href="/current-members" class="roster-link-btn">
                     <span>View Members</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
 
             <div class="story-node roster-card">
-                <i class="fa-solid fa-clock-rotate-left"></i>
+                <div class="roster-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
                 <h4>Past Members</h4>
                 <p class="roster-sub">Alumni of the chapter's executive committee and domain teams.</p>
-                <a href="/past-members" class="domain-toggle-btn" style="text-decoration:none; justify-content:center; gap:0.5rem;">
+                <a href="/past-members" class="roster-link-btn">
                     <span>View Members</span> <i class="fa-solid fa-arrow-right"></i>
                 </a>
             </div>
