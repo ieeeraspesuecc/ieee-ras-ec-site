@@ -39,6 +39,114 @@
             border-color: rgba(0, 180, 216, 0.5) !important;
             box-shadow: 0 15px 40px rgba(0, 180, 216, 0.15);
         }
+
+        /* --- CONTACT US MODAL STYLES --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(5, 8, 17, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .contact-modal {
+            background: #0b1220;
+            border: 1px solid rgba(0, 180, 216, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 420px;
+            position: relative;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 180, 216, 0.2);
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.active .contact-modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 1.2rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .contact-info-list {
+            list-style: none;
+            padding: 0;
+            margin: 1.5rem 0 0 0;
+        }
+
+        .contact-info-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            padding: 0.9rem 0;
+            border-bottom: 1px solid rgba(0, 180, 216, 0.1);
+        }
+
+        .contact-info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .contact-info-list a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .contact-info-list a:hover {
+            color: #00b4d8;
+        }
+
+        .contact-info-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(0, 180, 216, 0.08);
+            border: 1px solid rgba(0, 180, 216, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00b4d8;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body>
@@ -59,6 +167,7 @@
             <a href="/events">Events</a>
             <a href="/team">Team</a>
             <a href="/sandbox">Sandbox</a>
+            <a href="javascript:void(0)" class="btn-nav" id="contactBtn">Contact Us</a>
             <a href="/#join" class="btn-nav">Join Club</a>
         </nav>
     </header>
@@ -110,6 +219,37 @@
         <br>
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSfCvPW05ajdeCPDAQMw1nj2JkaA1scZo531dCYA7ZhqiXmShA/viewform?usp=publish-editor" target="_blank" rel="noopener" class="btn-primary" style="padding: 14px 36px; font-weight: 700;">Recruiting Soon</a>
     </section>
+
+    <div class="modal-overlay" id="contactModal">
+        <div class="contact-modal">
+            <button class="modal-close" id="closeContactModal">&times;</button>
+            <h2 style="color: #fff; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Get in Touch</h2>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 0;">Reach out to us directly through any of these.</p>
+
+            <ul class="contact-info-list">
+                <li>
+                    <div class="contact-info-icon"><i class="fa-solid fa-phone"></i></div>
+                    <a href="tel:+916362356827">+91 63623 56827</a>
+                </li>
+                <li>
+                    <div class="contact-info-icon"><i class="fa-solid fa-phone"></i></div>
+                    <a href="tel:+916363457241">+91 63634 57241</a>
+                </li>
+                <li>
+                    <div class="contact-info-icon"><i class="fa-brands fa-instagram"></i></div>
+                    <a href="https://www.instagram.com/ieeeras.studentchapter.pesuecc/" target="_blank" rel="noopener">Instagram</a>
+                </li>
+                <li>
+                    <div class="contact-info-icon"><i class="fa-brands fa-linkedin-in"></i></div>
+                    <a href="https://www.linkedin.com/in/ieee-ras-pesu-ec-campus-a54a68279" target="_blank" rel="noopener">LinkedIn</a>
+                </li>
+                <li>
+                    <div class="contact-info-icon"><i class="fa-solid fa-envelope"></i></div>
+                    <a href="mailto:ieeeras.pesu.ecc.studentchapter@gmail.com">ieeeras.pesu.ecc.studentchapter@gmail.com</a>
+                </li>
+            </ul>
+        </div>
+    </div>
 
     <footer style="text-align: center; padding: 4rem 2rem; color: #475569; font-size: 0.85rem; border-top: 1px solid rgba(0, 180, 216, 0.05); margin-top: 6rem;">
         <p>&copy; 2026 IEEE RAS PESU - EC Campus. All Rights Reserved.</p>
@@ -201,6 +341,28 @@
 
         initCanvas();
         renderEngine();
+
+        /* --- CONTACT MODAL SCRIPT LOGIC --- */
+        const contactBtn = document.getElementById('contactBtn');
+        const contactModal = document.getElementById('contactModal');
+        const closeContactModal = document.getElementById('closeContactModal');
+
+        if (contactBtn && contactModal && closeContactModal) {
+            contactBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                contactModal.classList.add('active');
+            });
+
+            closeContactModal.addEventListener('click', () => {
+                contactModal.classList.remove('active');
+            });
+
+            contactModal.addEventListener('click', (e) => {
+                if (e.target === contactModal) {
+                    contactModal.classList.remove('active');
+                }
+            });
+        }
     </script>
     
     <script src="static/script.js"></script>
