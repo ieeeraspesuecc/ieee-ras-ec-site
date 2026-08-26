@@ -24,19 +24,48 @@
         }
         .hero-story-block {
             text-align: center;
-            margin-bottom: 5rem;
+            margin-bottom: 4.5rem;
+        }
+        .hero-intro {
+            color: #94a3b8;
+            max-width: 620px;
+            margin: 1.25rem auto 0 auto;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+        .cluster-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 4rem 0 2.25rem 0;
+        }
+        .cluster-header:first-of-type { margin-top: 0; }
+        .cluster-header .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(0,245,255,0.3), transparent);
+        }
+        .cluster-header span {
+            color: #00f5ff;
+            font-weight: 800;
+            letter-spacing: 2.5px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            white-space: nowrap;
         }
         .story-node {
             position: relative;
             background: rgba(8, 14, 28, 0.7);
             border: 1px solid rgba(0, 180, 216, 0.15);
             backdrop-filter: blur(14px);
-            padding: 2.5rem;
+            padding: 2.25rem;
             border-radius: 20px;
             max-width: 650px;
-            margin-bottom: 4rem;
+            margin-bottom: 1.75rem;
             box-shadow: 0 20px 50px rgba(0,0,0,0.4);
             transition: all 0.4s ease;
+            display: flex;
+            gap: 1.5rem;
         }
         .story-node:nth-child(even) {
             margin-left: auto;
@@ -47,19 +76,111 @@
             border-color: #00f5ff;
             box-shadow: 0 20px 45px rgba(0, 245, 255, 0.1);
         }
-        .node-number {
-            font-size: 3.5rem;
-            font-weight: 900;
-            position: absolute;
-            top: -2.5rem;
-            left: 2rem;
-            background: linear-gradient(180deg, rgba(0, 245, 255, 0.3) 0%, rgba(0,0,0,0) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .node-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(0, 245, 255, 0.08);
+            border: 1px solid rgba(0, 245, 255, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
-        .story-node:nth-child(even) .node-number {
-            left: auto;
-            right: 2rem;
+        .node-icon i {
+            color: #00f5ff;
+            font-size: 1.4rem;
+        }
+        .about-cta {
+            text-align: center;
+            margin-top: 5rem;
+            padding: 3rem 2rem;
+            background: rgba(8, 14, 28, 0.7);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            border-radius: 24px;
+            backdrop-filter: blur(14px);
+        }
+        .about-cta h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 0.75rem;
+        }
+        .about-cta p {
+            color: #94a3b8;
+            max-width: 480px;
+            margin: 0 auto 1.75rem auto;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .about-cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .about-container {
+                margin: 6rem auto 3.5rem auto;
+                padding: 0 1.25rem;
+            }
+            .hero-story-block {
+                margin-bottom: 3rem;
+            }
+            .hero-intro {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+            .cluster-header {
+                margin: 3rem 0 1.5rem 0;
+                gap: 0.75rem;
+            }
+            .cluster-header span {
+                font-size: 0.75rem;
+                letter-spacing: 1.5px;
+            }
+            .story-node {
+                flex-direction: column;
+                gap: 1rem;
+                margin-left: 0 !important;
+                margin-bottom: 1.25rem;
+                padding: 1.5rem;
+                max-width: 100%;
+            }
+            .node-icon {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+            }
+            .node-icon i {
+                font-size: 1.2rem;
+            }
+            .story-node h3 {
+                font-size: 1.2rem !important;
+            }
+            .story-node p {
+                font-size: 0.95rem !important;
+            }
+            .about-cta {
+                margin-top: 3rem;
+                padding: 2rem 1.25rem;
+                border-radius: 18px;
+            }
+            .about-cta h2 {
+                font-size: 1.4rem;
+            }
+            .about-cta p {
+                font-size: 0.9rem;
+            }
+            .about-cta-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            .about-cta-buttons .btn-primary {
+                width: 100%;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -87,63 +208,106 @@
         <div class="hero-story-block">
             <span style="color: #00f5ff; font-weight: 800; letter-spacing: 2px; font-size: 0.85rem; text-transform: uppercase;">Discover Our Mission</span>
             <h1 style="font-size: 3rem; font-weight: 800; margin-top: 0.5rem; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Tinkering Beyond Code</h1>
+            <p class="hero-intro">We're the corner of PES University EC Campus where lines of code stop being theoretical and start driving motors, reading sensors, and moving through the real world.</p>
+        </div>
+
+        <div class="cluster-header">
+            <span>Our Philosophy</span>
+            <div class="line"></div>
         </div>
 
         <div class="story-stream">
             <div class="story-node">
-                <div class="node-number">01</div>
-                <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: #00f5ff;">Hands-On Engineering</h3>
-                <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
-                    Turn theoretical math and code into moving physical robots.
-                </p>
+                <div class="node-icon"><i class="fa-solid fa-bolt"></i></div>
+                <div>
+                    <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; color: #00f5ff;">Hands-On Engineering</h3>
+                    <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
+                        Turn theoretical math and code into moving physical robots.
+                    </p>
+                </div>
             </div>
 
             <div class="story-node">
-                <div class="node-number">02</div>
-                <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: #00b4d8;">Real Hardware Focus</h3>
-                <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
-                    We build physical machinery, write real-time control loops, and foster creative tinkering.
-                </p>
+                <div class="node-icon"><i class="fa-solid fa-gears"></i></div>
+                <div>
+                    <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; color: #00b4d8;">Real Hardware Focus</h3>
+                    <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
+                        We build physical machinery, write real-time control loops, and foster creative tinkering.
+                    </p>
+                </div>
             </div>
 
             <div class="story-node">
-                <div class="node-number">03</div>
-                <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: #00f5ff;">Prime Location</h3>
-                <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
-                    Based at PESU EC Campus in the heart of Electronic City's major tech cluster.
-                </p>
+                <div class="node-icon"><i class="fa-solid fa-hammer"></i></div>
+                <div>
+                    <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; color: #00f5ff;">Built to Operate</h3>
+                    <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
+                        We skip standard slide decks to focus entirely on building real, operating hardware stacks.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cluster-header">
+            <span>Where We Work</span>
+            <div class="line"></div>
+        </div>
+
+        <div class="story-stream">
+            <div class="story-node">
+                <div class="node-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <div>
+                    <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; color: #00f5ff;">Prime Location</h3>
+                    <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
+                        Based at PESU EC Campus in the heart of Electronic City's major tech cluster.
+                    </p>
+                </div>
             </div>
 
             <div class="story-node">
-                <div class="node-number">04</div>
-                <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: #00f5ff;">Modern Prototyping Labs</h3>
-                <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
-                    Access state-of-the-art lab facilities, embedded circuitry sandboxes, and modern workshops.
-                </p>
+                <div class="node-icon"><i class="fa-solid fa-flask"></i></div>
+                <div>
+                    <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; color: #00f5ff;">Modern Prototyping Labs</h3>
+                    <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
+                        Access state-of-the-art lab facilities, embedded circuitry sandboxes, and modern workshops.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cluster-header">
+            <span>What We Build With</span>
+            <div class="line"></div>
+        </div>
+
+        <div class="story-stream">
+            <div class="story-node">
+                <div class="node-icon"><i class="fa-solid fa-robot"></i></div>
+                <div>
+                    <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; color: #00f5ff;">Core Technical Stack</h3>
+                    <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
+                        Specialize in autonomous navigation, computer vision, and ROS-based kinematics.
+                    </p>
+                </div>
             </div>
 
             <div class="story-node">
-                <div class="node-number">05</div>
-                <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: #00f5ff;">Core Technical Stack</h3>
-                <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
-                    Specialize in autonomous navigation, computer vision, and ROS-based kinematics.
-                </p>
+                <div class="node-icon"><i class="fa-solid fa-microchip"></i></div>
+                <div>
+                    <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; color: #00f5ff;">Embedded Systems</h3>
+                    <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
+                        Get hands-on with microcontroller programming using ESP32, Arduino, and real-time hardware.
+                    </p>
+                </div>
             </div>
+        </div>
 
-            <div class="story-node">
-                <div class="node-number">06</div>
-                <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: #00f5ff;">Embedded Systems</h3>
-                <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
-                    Get hands-on with microcontroller programming using ESP32, Arduino, and real-time hardware.
-                </p>
-            </div>
-
-            <div class="story-node">
-                <div class="node-number">07</div>
-                <h3 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; color: #00f5ff;">Built to Operate</h3>
-                <p style="color: #cbd5e1; line-height: 1.7; margin: 0; font-size: 1.05rem;">
-                    We skip standard slide decks to focus entirely on building real, operating hardware stacks.
-                </p>
+        <div class="about-cta">
+            <h2>Ready to get your hands dirty?</h2>
+            <p>Check out what we're building right now, or meet the people behind it.</p>
+            <div class="about-cta-buttons">
+                <a href="/events" class="btn-primary">Explore Events</a>
+                <a href="/team" class="btn-primary" style="background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #fff;">Meet the Team</a>
             </div>
         </div>
     </div>
@@ -159,9 +323,10 @@
         resize();
 
         // 1. Interactive Tracking Drones
+        const isMobile = window.innerWidth < 640;
         let bots = [
-            { x: 150, y: 350, baseRadius: 22, targetY: 350 },
-            { x: window.innerWidth - 180, y: 600, baseRadius: 26, targetY: 600 }
+            { x: window.innerWidth * 0.15, y: 300, baseRadius: isMobile ? 16 : 22, targetY: 300 },
+            { x: window.innerWidth * 0.85, y: 550, baseRadius: isMobile ? 18 : 26, targetY: 550 }
         ];
 
         // 2. Blueprint Background Still Robots
